@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Sistema Hospitalar</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    background: #2c3e50;
+    color: white;
+    height: 100vh;
+    padding: 10px;
+}
+
+.sidebar h2 {
+    text-align: center;
+}
+
+.sidebar button {
+    width: 100%;
+    margin: 5px 0;
+    padding: 10px;
+    background: #34495e;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.sidebar button:hover {
+    background: #1abc9c;
+}
+
+/* Conteúdo */
+.content {
+    flex: 1;
+    padding: 20px;
+}
+
+input, select, textarea {
+    padding: 5px;
+    margin: 5px 0;
+    width: 100%;
+}
+
+button {
+    padding: 8px;
+    margin: 5px 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+
+th {
+    background: #eee;
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h2>Menu</h2>
+    <button onclick="show('perfil')">Perfis</button>
+    <button onclick="show('usuarios')">Usuários</button>
+    <button onclick="show('tipo_alta')">Tipos Alta</button>
+    <button onclick="show('internacao')">Internações</button>
+</div>
+
+<div class="content" id="app"></div>
+
+<script>
+
+// ======= BANCO LOCAL =======
+let db = JSON.parse(localStorage.getItem("db")) || {
+    perfil: [],
+    usuarios: [],
+    tipo_alta: [],
+    internacao: [],
+    parecer: []
+};
+
+function saveDB() {
+    localStorage.setItem("db", JSON.stringify(db));
+}
+
+// ======= NAVEGAÇÃO =======
+function show(tela) {
+    if (tela === 'perfil') renderPerfil();
+    if (tela === 'usuarios') renderUsuarios();
+    if (tela === 'tipo_alta') renderTipoAlta();
+    if (tela === 'internacao') renderInternacao();
+}
+
+// ======= PERFIL =======
+function renderPerfil() {
+    let html = `
+    <h2>Perfis</h2>
+
+    <input id="perfilNome" placeholder="Nome">
+    <button onclick="addPerfil()">Salvar</button>
+
+    <table>
+        <tr><th>ID</th><th>Nome</th><th>Ações</th></tr>
+        ${db.perfil.map(p => `
+            <tr>
+                <td>${p.id}</td>
+                <td>${p.nome}</td>
+                <td>
+                    <button onclick="delPerfil(${p.id})">Excluir</button>
+                </td>
+            </tr>
+        `).join('')}
+    </table>
+    `;
+    app.innerHTML = html;
+}
+
+function addPerfil() {
+    let nome = document.getElementById("perfilNome").value;
+    db.perfil.push({ id: Date.now(), nome });
+    saveDB();
+    renderPerfil();
+}
+
+function delPerfil(id) {
+    db.perfil = db.perfil.filter(p => p.id !== id);
+    saveDB();
+    renderPerfil();
+}
+
+// ======= USUÁRIOS =======
+function renderUsuarios() {
+    let html = `
+    <h2>Usuários</h2>
+
+    <input id="nome" placeholder="Nome">
+    <input id="email" placeholder="Email">
+    <input id="senha" placeholder="Senha">
+
+    <select id="perfil_id">
+        ${db.perfil.map(p => `<option value="${p.id}">${p.nome}</option>`)}
+    </select>
+
+    <button onclick="addUsuario()">Salvar</button>
+
+    <table>
+        <tr><th>Nome</th><th>Email</th><th>Perfil</th><th>Ações</th></tr>
+        ${db.usuarios.map(u => `
+            <tr>
+                <td>${u.nome}</td>
+                <td>${u.email}</td>
+                <td>${getPerfil(u.perfil_id)}</td>
+                <td><button onclick="delUsuario(${u.id})">Excluir</button></td>
+            </tr>
+        `).join('')}
+    </table>
+    `;
+    app.innerHTML = html;
+}
+
+function getPerfil(id) {
+    let p = db.perfil.find(x => x.id == id);
+    return p ? p.nome : "";
+}
+
+function addUsuario() {
+    db.usuarios.push({
+        id: Date.now(),
+        nome: nome.value,
+        email: email.value,
+        senha: senha.value,
+        perfil_id: perfil_id.value
+    });
+    saveDB();
+    renderUsuarios();
+}
+
+function delUsuario(id) {
+    db.usuarios = db.usuarios.filter(u => u.id !== id);
+    saveDB();
+    renderUsuarios();
+}
+
+// ======= TIPO ALTA =======
+function renderTipoAlta() {
+    let html = `
+    <h2>Tipos de Alta</h2>
+
+    <input id="alta" placeholder="Descrição">
+    <button onclick="addAlta()">Salvar</button>
+
+    <table>
+        ${db.tipo_alta.map(a => `
+            <tr>
+                <td>${a.alta}</td>
+                <td><button onclick="delAlta(${a.id})">Excluir</button></td>
+            </tr>
+        `).join('')}
+    </table>
+    `;
+    app.innerHTML = html;
+}
+
+function addAlta() {
+    db.tipo_alta.push({ id: Date.now(), alta: alta.value });
+    saveDB();
+    renderTipoAlta();
+}
+
+function delAlta(id) {
+    db.tipo_alta = db.tipo_alta.filter(a => a.id !== id);
+    saveDB();
+    renderTipoAlta();
+}
+
+// ======= INTERNAÇÃO =======
+function renderInternacao() {
+    let html = `
+    <h2>Internações</h2>
+
+    <input id="nome_paciente" placeholder="Paciente">
+    <input id="numero_prontuario" placeholder="Prontuário">
+    <input type="date" id="data_internacao">
+
+    <select id="tipo_alta_id">
+        ${db.tipo_alta.map(t => `<option value="${t.id}">${t.alta}</option>`)}
+    </select>
+
+    <button onclick="addInternacao()">Salvar</button>
+
+    <table>
+        <tr>
+            <th>Paciente</th>
+            <th>Prontuário</th>
+            <th>Data</th>
+            <th>Ações</th>
+        </tr>
+
+        ${db.internacao.map(i => `
+            <tr>
+                <td>${i.nome_paciente}</td>
+                <td>${i.numero_prontuario}</td>
+                <td>${i.data_internacao}</td>
+                <td>
+                    <button onclick="verParecer(${i.id})">Parecer</button>
+                    <button onclick="delInternacao(${i.id})">Excluir</button>
+                </td>
+            </tr>
+        `).join('')}
+    </table>
+    `;
+    app.innerHTML = html;
+}
+
+function addInternacao() {
+    db.internacao.push({
+        id: Date.now(),
+        nome_paciente: nome_paciente.value,
+        numero_prontuario: numero_prontuario.value,
+        data_internacao: data_internacao.value,
+        tipo_alta_id: tipo_alta_id.value
+    });
+    saveDB();
+    renderInternacao();
+}
+
+function delInternacao(id) {
+    db.internacao = db.internacao.filter(i => i.id !== id);
+    saveDB();
+    renderInternacao();
+}
+
+// ======= PARECER =======
+function verParecer(internacaoId) {
+    let pareceres = db.parecer.filter(p => p.internacao_id == internacaoId);
+
+    let html = `
+    <h2>Parecer</h2>
+
+    <textarea id="texto"></textarea>
+    <button onclick="addParecer(${internacaoId})">Salvar</button>
+
+    <ul>
+        ${pareceres.map(p => `<li>${p.texto}</li>`).join('')}
+    </ul>
+
+    <button onclick="renderInternacao()">Voltar</button>
+    `;
+    app.innerHTML = html;
+}
+
+function addParecer(internacaoId) {
+    db.parecer.push({
+        id: Date.now(),
+        texto: texto.value,
+        internacao_id: internacaoId
+    });
+    saveDB();
+    verParecer(internacaoId);
+}
+
+// ======= START =======
+show('perfil');
+
+</script>
+
+</body>
+</html>
