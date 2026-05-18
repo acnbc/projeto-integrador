@@ -13,7 +13,7 @@ class Usuario(Base):
     id = Column(Integer, primary_key=True, index=True)
     nome = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False)
-    senha = Column(String(250), nullable=False)
+    senha_hash = Column(String(250), nullable=False)
 
     perfil_id = Column(Integer, ForeignKey("perfil.id"), nullable=False)
 

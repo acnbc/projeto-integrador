@@ -3,7 +3,12 @@ from typing import Optional
 from datetime import datetime, timezone
 
 from models.perfil_schemas import PerfilResponse
+from enum import IntEnum
 
+
+class PerfilId(IntEnum):
+    COORDENADOR = 1
+    ALUNO = 2
 
 class Usuario(BaseModel):
     nome: str = Field(..., max_length=250)
@@ -21,8 +26,13 @@ class UpdateUsuario(BaseModel):
 class NovoUsuario(BaseModel):
     nome: str = Field(None, max_length=250)
     email: EmailStr = Field(None, max_length=250)
-    senha: str = Field(None, max_length=250)
+    senha: str = Field(None, min_length=8)
     perfil_id: int = None
+
+
+class Token(BaseModel):
+	access_token: str
+	token_type: str
 
 
 class InativarUsuario(BaseModel):
