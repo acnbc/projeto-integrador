@@ -11,6 +11,7 @@ import models.tipo_alta_schemas as schemas
 alta_api = APIRouter(prefix="/api/tipo-alta", tags=["Tipos de Alta"])
 
 _coordenador = Depends(perfil_permitido(PerfilId.COORDENADOR))
+_leitura = Depends(perfil_permitido(PerfilId.COORDENADOR, PerfilId.ALUNO))
 
 
 @alta_api.get("", summary="Lista todos os tipos de altas", status_code=status.HTTP_200_OK, response_model=list[schemas.TipoAltaResponse])
@@ -18,7 +19,7 @@ async def get_tipos_alta(
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db),
-    _: Usuario = _coordenador,
+    _: Usuario = _leitura,
 ):
     return repository.get_tipos_altas(db, skip, limit)
 

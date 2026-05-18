@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, EmailStr, field_serializer
+from pydantic import BaseModel, ConfigDict, Field, EmailStr, field_serializer
 from typing import Optional
 from datetime import datetime, timezone
 
@@ -66,7 +66,9 @@ class UsuarioResponse(BaseModel):
 
 
 class UsuarioMinimoResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     nome: str
     perfil_id: int
-    perfil: Optional[PerfilResponse]
+    perfil: Optional[PerfilResponse] = None

@@ -14,7 +14,7 @@ from models.usuario_schemas import PerfilId
 
 password_hash = PasswordHash.recommended()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/usuario/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/usuario/token")
 
 
 def hash_password(password: str) -> str:

@@ -1,0 +1,129 @@
+{% extends "template.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Formulário de parecer</h1>
+    <p class="text-muted">Cada envio registra um <strong>novo parecer</strong>, vinculado à internação escolhida (nova ou já existente).</p>
+</div>
+
+<section class="card">
+    <form id="form-parecer" class="form">
+        <input type="hidden" id="p-internacao-id" value="">
+
+        <h2 class="form-section-title">Aluno responsável</h2>
+        <div class="field">
+            <label for="p-aluno">Nome do aluno</label>
+            <input type="text" id="p-aluno" readonly class="input-readonly">
+        </div>
+
+        <h2 class="form-section-title">Identificação</h2>
+        <div class="field">
+            <label for="p-prontuario">Número do prontuário</label>
+            <input type="text" id="p-prontuario" maxlength="50" data-maxlength="50" data-char-counter required>
+            <span class="char-counter" data-for="p-prontuario"></span>
+            <p id="p-prontuario-hint" class="text-muted hint hidden"></p>
+        </div>
+
+        <h2 class="form-section-title">Dados do paciente</h2>
+        <div class="field field-checkbox">
+            <label class="checkbox-label">
+                <input type="checkbox" id="p-ocultar-nome">
+                Ocultar nome do paciente no registro
+            </label>
+        </div>
+
+        <div class="field" id="wrap-nome-paciente">
+            <label for="p-nome">Nome do paciente</label>
+            <input type="text" id="p-nome" maxlength="250" data-maxlength="250" data-char-counter>
+            <span class="char-counter" data-for="p-nome"></span>
+            <p id="p-nome-hint" class="text-muted hint hidden"></p>
+        </div>
+
+        <div class="field-row field-row-3">
+            <div class="field">
+                <label for="p-nascimento">Data de nascimento</label>
+                <input type="date" id="p-nascimento" required>
+            </div>
+            <div class="field">
+                <label for="p-sexo">Sexo</label>
+                <select id="p-sexo" required>
+                    <option value="F">Feminino</option>
+                    <option value="M">Masculino</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="p-idade">Idade calculada</label>
+                <input type="text" id="p-idade" readonly class="input-readonly" placeholder="—" tabindex="-1">
+            </div>
+        </div>
+
+        <h2 class="form-section-title">Internação</h2>
+        <p class="text-muted form-section-hint">O parecer será gravado na internação selecionada. Um paciente pode ter várias internações; cada internação pode ter vários pareceres.</p>
+        <div class="field">
+            <label for="p-internacao-select">Internação deste parecer</label>
+            <select id="p-internacao-select" required>
+                <option value="nova">Nova internação (informe data e setor abaixo)</option>
+            </select>
+            <p id="p-internacao-hint" class="text-muted hint hidden"></p>
+        </div>
+        <div class="field-row" id="wrap-dados-internacao">
+            <div class="field">
+                <label for="p-internacao">Data de internação</label>
+                <input type="date" id="p-internacao" required>
+            </div>
+            <div class="field">
+                <label for="p-setor">Setor de internação</label>
+                <select id="p-setor" required></select>
+            </div>
+        </div>
+
+        <h2 class="form-section-title">Dados deste parecer</h2>
+        <div class="field-row">
+            <div class="field">
+                <label for="p-solicitacao-data">Data da solicitação</label>
+                <input type="date" id="p-solicitacao-data" required>
+            </div>
+            <div class="field">
+                <label for="p-solicitacao-hora">Hora da solicitação</label>
+                <input type="time" id="p-solicitacao-hora" required>
+            </div>
+        </div>
+        <div class="field-row">
+            <div class="field">
+                <label for="p-resposta-data">Data da resposta</label>
+                <input type="date" id="p-resposta-data">
+            </div>
+            <div class="field">
+                <label for="p-resposta-hora">Hora da resposta</label>
+                <input type="time" id="p-resposta-hora">
+            </div>
+        </div>
+
+        <h2 class="form-section-title">Alta</h2>
+        <div class="field-row">
+            <div class="field">
+                <label for="p-alta">Data da alta</label>
+                <input type="date" id="p-alta">
+            </div>
+            <div class="field">
+                <label for="p-tipo-alta">Tipo de alta</label>
+                <select id="p-tipo-alta">
+                    <option value="">— Não informado —</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="p-obs">Observações gerais (opcional)</label>
+            <textarea id="p-obs" rows="5" maxlength="5000" data-maxlength="5000" data-char-counter placeholder="Informações adicionais..."></textarea>
+            <span class="char-counter" data-for="p-obs"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Enviar parecer</button>
+    </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/parecer_form.js"></script>
+{% endblock %}

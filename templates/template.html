@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ page_title }}{% endblock %} · Gestor de Prontuários</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/app.css">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="{% if hide_nav %}body-auth{% endif %}" data-page="{{ active }}" data-perfil-requerido="{{ perfil_requerido | default('') }}">
+    {% if not hide_nav %}
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="/dashboard" class="brand" data-nav-coordenador>
+                <span class="brand-mark">GP</span>
+                <span class="brand-text">Gestor de Prontuários</span>
+            </a>
+            <a href="/pareceres/novo" class="brand brand-mobile" data-nav-aluno>
+                <span class="brand-mark">GP</span>
+                <span class="brand-text">Novo parecer</span>
+            </a>
+            <nav class="main-nav" id="main-nav">
+                <a href="/dashboard" class="nav-link {% if active == 'dashboard' %}active{% endif %}" data-nav-coordenador>Dashboard</a>
+                <a href="/usuarios" class="nav-link {% if active == 'usuarios' %}active{% endif %}" data-nav-coordenador>Usuários</a>
+                <a href="/pacientes" class="nav-link {% if active == 'pacientes' %}active{% endif %}" data-nav-coordenador>Pacientes</a>
+                <a href="/pareceres" class="nav-link {% if active == 'pareceres' %}active{% endif %}" data-nav-coordenador>Pareceres</a>
+                <a href="/pareceres/novo" class="nav-link {% if active == 'parecer-novo' %}active{% endif %}">Novo parecer</a>
+            </nav>
+            <div class="user-menu">
+                <span id="user-label" class="user-label"></span>
+                <button type="button" id="btn-logout" class="btn btn-ghost btn-sm">Sair</button>
+            </div>
+        </div>
+    </header>
+    {% endif %}
+
+    <main class="{% if hide_nav %}main-auth{% else %}main-content{% endif %}">
+        {% block content %}{% endblock %}
+    </main>
+
+    <div id="modal-overlay" class="modal-overlay hidden" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <div id="modal-icon" class="modal-icon"></div>
+            <h2 id="modal-title" class="modal-title"></h2>
+            <p id="modal-message" class="modal-message"></p>
+            <button type="button" id="modal-close" class="btn btn-primary">OK</button>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

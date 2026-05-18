@@ -12,6 +12,7 @@ parecer_api = APIRouter(prefix="/api/parecer", tags=["Parecer"])
 
 _coordenador = Depends(perfil_permitido(PerfilId.COORDENADOR))
 _aluno = Depends(perfil_permitido(PerfilId.ALUNO))
+_autorizado = Depends(perfil_permitido(PerfilId.COORDENADOR, PerfilId.ALUNO))
 
 
 @parecer_api.get("", summary="Lista todos os pareceres", status_code=status.HTTP_200_OK, response_model=list[schemas.ParecerResponse])
@@ -24,13 +25,34 @@ async def get_pareceres(
     return repository.get_pareceres(db, skip, limit)
 
 
+@parecer_api.post(
+    "/completo",
+    summary="Registra parecer vinculado a uma internação (nova ou existente)",
+    status_code=status.HTTP_201_CREATED,
+    response_model=schemas.ParecerResponse,
+)
+async def post_parecer_completo(
+    formulario: schemas.ParecerFormulario,
+    db: Session = Depends(get_db),
+    usuario: Usuario = _autorizado,
+):
+    try:
+        return repository.create_parecer_completo(
+            db, formulario, usuario.id, usuario.nome
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
 @parecer_api.post("", summary="Cria um novo parecer", status_code=status.HTTP_201_CREATED, response_model=schemas.ParecerResponse)
 async def post_parecer(
-    internacao: schemas.NovoParecer,
+    novo_parecer: schemas.NovoParecer,
     db: Session = Depends(get_db),
-    _: Usuario = _aluno,
+    usuario: Usuario = _coordenador,
 ):
-    return repository.create_novo_parecer(db, internacao)
+    dados = novo_parecer.model_dump()
+    dados["criado_por"] = usuario.id
+    return repository.create_novo_parecer(db, schemas.NovoParecer(**dados))
 
 
 @parecer_api.get("/{id}", summary="Detalhes de um parecer", status_code=status.HTTP_200_OK, response_model=schemas.ParecerResponse)

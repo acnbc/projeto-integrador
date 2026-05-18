@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, FastAPI, HTTPException, status
+from fastapi import APIRouter, Depends, FastAPI, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from controllers.auth import perfil_permitido
@@ -12,6 +12,7 @@ import models.internacao_schemas as schemas
 internacao_api = APIRouter(prefix="/api/internacao", tags=["Internação"])
 
 _coordenador = Depends(perfil_permitido(PerfilId.COORDENADOR))
+_leitura = Depends(perfil_permitido(PerfilId.COORDENADOR, PerfilId.ALUNO))
 
 
 @internacao_api.get("", summary="Lista todas as internações", status_code=status.HTTP_200_OK, response_model=list[schemas.InternacaoResponse])
@@ -19,7 +20,7 @@ async def listar_internacoes(
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db),
-    _: Usuario = _coordenador,
+    _: Usuario = _leitura,
 ):
     return repository.get_internacoes(db, skip, limit)
 
@@ -33,11 +34,47 @@ async def post_internacao(
     return repository.create_nova_internacao(db, internacao)
 
 
+@internacao_api.get(
+    "/busca/nome",
+    summary="Busca paciente e internações pelo nome (cadastro anterior)",
+    response_model=schemas.PacientePorProntuario,
+)
+async def buscar_por_nome(
+    nome: str = Query(..., min_length=2, max_length=250),
+    db: Session = Depends(get_db),
+    _: Usuario = _leitura,
+):
+    try:
+        paciente = repository.buscar_paciente_por_nome(db, nome)
+    except ValueError as e:
+        raise HTTPException(status_code=409, detail=str(e))
+    if paciente is None:
+        raise HTTPException(status_code=404, detail="Paciente não encontrado com este nome")
+    return paciente
+
+
+@internacao_api.get(
+    "/prontuario/{numero_prontuario}",
+    summary="Busca paciente e internações pelo prontuário",
+    response_model=schemas.PacientePorProntuario,
+)
+async def buscar_por_prontuario(
+    numero_prontuario: str,
+    db: Session = Depends(get_db),
+    _: Usuario = _leitura,
+):
+    internacoes = repository.get_internacoes_por_prontuario(db, numero_prontuario)
+    paciente = repository.montar_paciente_por_prontuario(numero_prontuario.strip(), internacoes)
+    if paciente is None:
+        raise HTTPException(status_code=404, detail="Prontuário não encontrado")
+    return paciente
+
+
 @internacao_api.get("/{id}", summary="Detalhes de uma internacao", status_code=status.HTTP_200_OK, response_model=schemas.InternacaoResponse)
 async def get_internacao(
     id: int,
     db: Session = Depends(get_db),
-    _: Usuario = _coordenador,
+    _: Usuario = _leitura,
 ):
     internacao = repository.get_internacao(db, id)
     if internacao is None:
