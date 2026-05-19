@@ -241,12 +241,6 @@ projeto-integrador/
 
 ---
 
-## Relatório final
-
-O documento [docs/RELATORIO_FINAL.md](docs/RELATORIO_FINAL.md) descreve como cada objetivo da disciplina foi implementado e pode ser utilizado diretamente na entrega acadêmica.
-
----
-
 ## Licença
 
 Projeto acadêmico desenvolvido no âmbito da UNIVESP. Consulte a instituição quanto ao uso e redistribuição do código.

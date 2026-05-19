@@ -24,10 +24,24 @@ document.addEventListener("DOMContentLoaded", () => {
         body,
       });
 
-      const tokenData = await tokenRes.json();
+      const raw = await tokenRes.text();
+      let tokenData = null;
+      if (raw) {
+        try {
+          tokenData = JSON.parse(raw);
+        } catch {
+          throw new Error(
+            tokenRes.status >= 500
+              ? "Servidor indisponível. Verifique se o MySQL está em execução."
+              : "Resposta inválida do servidor."
+          );
+        }
+      }
       if (!tokenRes.ok) {
         throw new Error(
-          typeof tokenData.detail === "string" ? tokenData.detail : "E-mail ou senha incorretos"
+          typeof tokenData?.detail === "string"
+            ? tokenData.detail
+            : "E-mail ou senha incorretos"
         );
       }
 

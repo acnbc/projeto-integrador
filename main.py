@@ -1,5 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy.exc import OperationalError
 
 from controllers.dashboard import use_dashboard_api
 from controllers.internacao import use_internacao_api
@@ -12,6 +14,14 @@ from controllers.usuario import use_usuario_api
 app = FastAPI(title="Gestor de prontuários", version="1.0.0")
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
+@app.exception_handler(OperationalError)
+async def database_unavailable_handler(_request: Request, _exc: OperationalError):
+    return JSONResponse(
+        status_code=503,
+        content={"detail": "Banco de dados indisponível. Verifique se o MySQL está em execução."},
+    )
 
 
 @app.get("/health", tags=["Sistema"])
