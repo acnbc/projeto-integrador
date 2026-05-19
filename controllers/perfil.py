@@ -18,7 +18,7 @@ async def get_perfis(
     db: Session = Depends(get_db),
     _: Usuario = _coordenador,
 ):
-    return repository.get_perfils(db)
+    return repository.get_perfis(db)
 
 
 def use_perfil(app_instance: FastAPI):

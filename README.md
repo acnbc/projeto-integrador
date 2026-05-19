@@ -1,37 +1,68 @@
-# FastAPI-Todo
-github code for article https://gerrysabar.medium.com/fastapi-simple-crud-with-mysql-sqlalchemy-e60dd04a5c7e
+# Gestor de Prontuários
 
-## Installation
+Sistema web para registro e gestão de pareceres clínicos vinculados a internações hospitalares (FastAPI + MySQL + JavaScript).
 
-### Prerequisites
+## Requisitos
 
-Ensure you have the following installed:
-- [Python] (https://www.python.org/downloads/) (v3)
+- Python 3.12+
+- MySQL 8+ (local ou Docker)
+- Git
 
-### Steps
+## Desenvolvimento local
 
-1. Clone the repository:
+1. Clone o repositório e crie o ambiente virtual:
    ```bash
-   git clone https://github.com/gerry-sabar/fastapi-todo
+   python3 -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
 
-2. Inside project root directory create virtual environment:
-    ```bash
-    python3 -m venv venv
+2. Copie as variáveis de ambiente:
+   ```bash
+   cp .env.example .env
+   ```
 
-3. Activate the virtual enviroment:
-    ```bash
-    source venv/bin/activate
+3. Configure o banco e o usuário admin:
+   ```bash
+   python scripts/setup_database.py
+   ```
 
-4. Install requirements:
-    ```bash
-    pip3 install -r requirements.txt
+4. Execute a API:
+   ```bash
+   fastapi dev main.py
+   ```
 
-5. Adjust database connection in database.py according to your mysql configuration
+5. Acesse http://localhost:8000/docs
 
-6. Run locally:
-    ```bash
-    fastapi dev main.py
+## Docker (nuvem / contêineres)
 
-7. You can access API documentation from here:
-    ```bash
-    http://localhost:8000/docs
+```bash
+export SECRET_KEY="sua-chave-secreta-com-pelo-menos-32-caracteres"
+docker compose up --build
+```
+
+Detalhes de deploy em nuvem: [docs/DEPLOY.md](docs/DEPLOY.md)
+
+## Testes
+
+Com Docker (recomendado — MySQL na porta **3307** para não conflitar com MySQL local):
+
+```bash
+chmod +x scripts/run_tests.sh
+./scripts/run_tests.sh
+```
+
+Ou manualmente:
+
+```bash
+docker compose up -d db
+export ENV=test
+export DATABASE_URL=mysql+pymysql://admin:admin@127.0.0.1:3307/ufrj_test
+export SECRET_KEY=chave-secreta-de-teste-com-32-caracteres
+pip install -r requirements-dev.txt
+pytest
+```
+
+## Integração contínua
+
+O workflow GitHub Actions (`.github/workflows/ci.yml`) executa testes e build Docker em cada push/PR.

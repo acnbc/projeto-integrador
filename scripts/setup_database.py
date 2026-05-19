@@ -48,8 +48,9 @@ def bootstrap_mysql_as_root() -> None:
         )
 
 
-def create_tables_and_seed() -> None:
-    engine = create_engine(settings.database_url)
+def create_tables_and_seed(engine=None) -> None:
+    if engine is None:
+        engine = create_engine(settings.database_url)
     print("Criando tabelas...")
     Base.metadata.create_all(bind=engine)
 

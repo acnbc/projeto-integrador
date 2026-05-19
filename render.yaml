@@ -1,0 +1,18 @@
+# Blueprint para deploy no Render (https://render.com)
+# Crie um banco MySQL gerenciado (ou use PlanetScale/Railway) e defina DATABASE_URL.
+services:
+  - type: web
+    name: gestor-prontuarios
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_ECHO
+        value: "false"

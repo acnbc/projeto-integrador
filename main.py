@@ -13,6 +13,11 @@ app = FastAPI(title="Gestor de prontuários", version="1.0.0")
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+
+@app.get("/health", tags=["Sistema"])
+async def health():
+    return {"status": "ok"}
+
 use_pages(app)
 use_internacao_api(app)
 use_parecer_api(app)
