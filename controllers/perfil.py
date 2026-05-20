@@ -1,16 +1,25 @@
-from data.connection import get_db
-from fastapi import FastAPI, APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, FastAPI, status
 from sqlalchemy.orm import Session
 
+from controllers.auth import perfil_permitido
+from data.connection import get_db
+from models.usuario_model import Usuario
+from models.usuario_schemas import PerfilId
 import data.perfil_repository as repository
 import models.perfil_schemas as schemas
 
-
 perfil = APIRouter(prefix="/api/perfil", tags=["Perfil"])
 
-@perfil.get("", summary="Lista todos os perfis", status_code=status.HTTP_200_OK, response_model=list[schemas.PerfilResponse])
-async def get_tipos_alta(db:Session=Depends(get_db)):
-    return repository.get_perfils(db)
+_coordenador = Depends(perfil_permitido(PerfilId.COORDENADOR))
 
-def use_perfil(app_instance:FastAPI):
+
+@perfil.get("", summary="Lista todos os perfis", status_code=status.HTTP_200_OK, response_model=list[schemas.PerfilResponse])
+async def get_perfis(
+    db: Session = Depends(get_db),
+    _: Usuario = _coordenador,
+):
+    return repository.get_perfis(db)
+
+
+def use_perfil(app_instance: FastAPI):
     app_instance.include_router(perfil)

@@ -5,8 +5,11 @@ from sqlalchemy.orm import sessionmaker
 
 configs = get_settings()
 
-# Initialize database engine by using MySQL
-engine = create_engine(configs.database_url,echo=True)
+engine = create_engine(
+    configs.database_url,
+    echo=configs.database_echo,
+    pool_pre_ping=True,
+)
 
 # Create a session factory bound to the engine
 SessionLocal = sessionmaker(autocommit=False,autoflush=False, bind=engine)

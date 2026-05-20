@@ -1,0 +1,26 @@
+{% extends "template.html" %}
+
+{% block content %}
+<section class="auth-card">
+    <div class="auth-header">
+        <span class="brand-mark brand-mark-lg">GP</span>
+        <h1>Entrar</h1>
+        <p class="text-muted">Acesso para alunos e coordenação</p>
+    </div>
+    <form id="form-login" class="form" novalidate>
+        <div class="field">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="username" required maxlength="250" autocomplete="username" placeholder="seu@email.com">
+        </div>
+        <div class="field">
+            <label for="password">Senha</label>
+            <input type="password" id="password" name="password" required minlength="8" maxlength="250" autocomplete="current-password" placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="btn-login">Entrar</button>
+    </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/login.js"></script>
+{% endblock %}

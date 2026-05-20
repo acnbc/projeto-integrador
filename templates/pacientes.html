@@ -1,0 +1,87 @@
+{% extends "template.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Pacientes</h1>
+    <p class="text-muted">Consulta e gestão de internações. Novos cadastros são feitos pelo formulário de parecer.</p>
+</div>
+
+<section class="card">
+    <h2 class="card-title">Pacientes (ordem alfabética)</h2>
+    <div id="lista-pacientes" class="pacientes-list">
+        <p class="text-muted">Carregando…</p>
+    </div>
+</section>
+
+<div id="modal-internacao" class="modal-overlay hidden">
+    <div class="modal modal-lg">
+        <h2 class="modal-title" id="modal-internacao-titulo">Internação</h2>
+        <div id="modal-internacao-conteudo" class="internacao-detalhe"></div>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" id="btn-fechar-internacao">Fechar</button>
+            <button type="button" class="btn btn-primary" id="btn-editar-internacao">Editar internação</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-paciente" class="modal-overlay hidden">
+    <div class="modal modal-lg">
+        <h2 class="modal-title">Detalhes / Editar internação</h2>
+        <form id="form-editar-paciente" class="form">
+            <input type="hidden" id="edit-pac-id">
+            <div class="field-row">
+                <div class="field">
+                    <label for="edit-prontuario">Prontuário (internação)</label>
+                    <input type="text" id="edit-prontuario" maxlength="50" data-maxlength="50" data-char-counter>
+                    <span class="char-counter" data-for="edit-prontuario"></span>
+                </div>
+                <div class="field">
+                    <label for="edit-setor">Setor</label>
+                    <input type="text" id="edit-setor" maxlength="100" data-maxlength="100" data-char-counter>
+                    <span class="char-counter" data-for="edit-setor"></span>
+                </div>
+            </div>
+            <div class="field">
+                <label for="edit-nome-pac">Nome</label>
+                <input type="text" id="edit-nome-pac" maxlength="250" data-maxlength="250" data-char-counter>
+                <span class="char-counter" data-for="edit-nome-pac"></span>
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label for="edit-data-int">Data internação</label>
+                    <input type="date" id="edit-data-int">
+                </div>
+                <div class="field">
+                    <label for="edit-sexo">Sexo</label>
+                    <select id="edit-sexo"><option value="F">F</option><option value="M">M</option></select>
+                </div>
+            </div>
+            <h3 class="form-subtitle">Alta</h3>
+            <div class="field-row">
+                <div class="field">
+                    <label for="edit-data-alta">Data alta</label>
+                    <input type="date" id="edit-data-alta">
+                </div>
+                <div class="field">
+                    <label for="edit-tipo-alta">Tipo de alta</label>
+                    <select id="edit-tipo-alta"><option value="">—</option></select>
+                </div>
+            </div>
+            <div class="field">
+                <label for="edit-obs-alta">Observações alta</label>
+                <input type="text" id="edit-obs-alta" maxlength="250" data-maxlength="250" data-char-counter>
+                <span class="char-counter" data-for="edit-obs-alta"></span>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-ghost" id="btn-fechar-paciente">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <button type="button" class="btn btn-danger" id="btn-excluir-paciente">Excluir</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/pacientes.js"></script>
+{% endblock %}

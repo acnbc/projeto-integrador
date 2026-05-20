@@ -36,4 +36,6 @@ class Internacao(Base):
 
     tipo_alta: Mapped[Optional["TipoAlta"]] = relationship()
     usuario: Mapped["Usuario"] = relationship()
-    pareceres: Mapped[List["Parecer"]] = relationship()
+    pareceres: Mapped[List["Parecer"]] = relationship(
+        "Parecer", back_populates="internacao"
+    )

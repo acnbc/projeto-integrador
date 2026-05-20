@@ -14,7 +14,7 @@ CREATE TABLE `usuarios`
     `id` int NOT NULL AUTO_INCREMENT,
     `nome` varchar(250) CHARACTER SET utf8 NOT NULL,
     `email` varchar(250) CHARACTER SET utf8 NOT NULL,
-    `senha` varchar(250) CHARACTER SET utf8 NOT NULL,
+    `senha_hash` varchar(250) CHARACTER SET utf8 NOT NULL,
     `perfil_id` int NOT NULL,
     `criado_em` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `inativado_em` timestamp NULL,
@@ -60,9 +60,10 @@ CREATE TABLE `internacao` (
 CREATE TABLE `parecer`
 (
     `id` int NOT NULL AUTO_INCREMENT,
-    `data_solicitacao_parecer` DATE NULL,
-    `data_parecer` DATE NULL,
+    `data_solicitacao_parecer` DATETIME NULL,
+    `data_parecer` DATETIME NULL,
     `texto_parecer` TEXT NULL,
+    `numero_prontuario` VARCHAR(50) NOT NULL,
     `internacao_id` int NOT NULL,
     `criado_por` int NOT NULL,
     `criado_em` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

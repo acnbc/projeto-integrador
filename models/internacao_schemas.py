@@ -7,6 +7,24 @@ from models.tipo_alta_schemas import TipoAltaResponse
 from models.usuario_schemas import UsuarioMinimoResponse
 
 
+class InternacaoResumo(BaseModel):
+    id: int
+    data_internacao: Optional[date] = None
+    setor_internacao: str
+    data_alta: Optional[date] = None
+    tipo_alta_id: Optional[int] = None
+    total_pareceres: int = 0
+
+
+class PacientePorProntuario(BaseModel):
+    numero_prontuario: str
+    nome_paciente: Optional[str] = None
+    data_nascimento_paciente: Optional[date] = None
+    sexo_paciente: Optional[str] = "F"
+    nome_oculto: bool = False
+    internacoes: List[InternacaoResumo] = []
+
+
 class InternacaoDelete(BaseModel):
     id: int
 

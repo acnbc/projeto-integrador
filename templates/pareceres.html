@@ -1,0 +1,76 @@
+{% extends "template.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Pareceres</h1>
+    <p class="text-muted">Listagem de todos os pareceres registrados</p>
+    <a href="/pareceres/novo" class="btn btn-primary">+ Novo parecer</a>
+</div>
+
+<section class="card">
+    <div class="table-wrap">
+        <table class="table" id="tabela-pareceres">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Prontuário</th>
+                    <th>Paciente</th>
+                    <th>Setor solicitante</th>
+                    <th>Aluno</th>
+                    <th>Solicitação</th>
+                    <th>Resposta</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</section>
+
+<div id="modal-parecer" class="modal-overlay hidden">
+    <div class="modal modal-lg">
+        <h2 class="modal-title">Parecer</h2>
+        <form id="form-editar-parecer" class="form">
+            <input type="hidden" id="par-id">
+            <div class="field">
+                <label for="par-internacao">Internação</label>
+                <select id="par-internacao" required></select>
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label for="par-solicitacao-data">Data solicitação</label>
+                    <input type="date" id="par-solicitacao-data">
+                </div>
+                <div class="field">
+                    <label for="par-solicitacao-hora">Hora solicitação</label>
+                    <input type="time" id="par-solicitacao-hora">
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label for="par-resposta-data">Data parecer</label>
+                    <input type="date" id="par-resposta-data">
+                </div>
+                <div class="field">
+                    <label for="par-resposta-hora">Hora parecer</label>
+                    <input type="time" id="par-resposta-hora">
+                </div>
+            </div>
+            <div class="field">
+                <label for="par-texto">Texto</label>
+                <textarea id="par-texto" rows="6" maxlength="5000" data-maxlength="5000" data-char-counter></textarea>
+                <span class="char-counter" data-for="par-texto"></span>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-ghost" id="btn-fechar-parecer">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <button type="button" class="btn btn-danger" id="btn-excluir-parecer">Excluir</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/pareceres.js"></script>
+{% endblock %}
